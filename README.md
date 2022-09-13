@@ -15,7 +15,7 @@ Previous repository at [https://hub.docker.com/r/jboss/wildfly](https://hub.dock
 To boot in standalone mode
 
     docker run -it quay.io/wildfly/wildfly
-    
+
 To boot in standalone mode with admin console available remotely
 
     docker run -p 8080:8080 -p 9990:9990 -it quay.io/wildfly/wildfly /opt/jboss/wildfly/bin/standalone.sh -b 0.0.0.0 -bmanagement 0.0.0.0
@@ -37,7 +37,7 @@ The most popular way of deploying an application is using the deployment scanner
 
 The simplest and cleanest way to deploy an application to WildFly running in a container started from the `quay.io/wildfly/wildfly` image is to use the deployment scanner method mentioned above.
 
-To do this you just need to extend the `quay.io/wildfly/wildfly` image by creating a new one. Place your application inside the `deployments/` directory with the `ADD` command (but make sure to include the trailing slash on the deployment folder path, [more info](https://docs.docker.com/reference/builder/#add)). You can also do the changes to the configuration (if any) as additional steps (`RUN` command).  
+To do this you just need to extend the `quay.io/wildfly/wildfly` image by creating a new one. Place your application inside the `deployments/` directory with the `ADD` command (but make sure to include the trailing slash on the deployment folder path, [more info](https://docs.docker.com/reference/builder/#add)). You can also do the changes to the configuration (if any) as additional steps (`RUN` command).
 
 [A simple example](https://github.com/goldmann/wildfly-docker-deployment-example) was prepared to show how to do it, but the steps are following:
 
@@ -87,9 +87,9 @@ You don't need to do this on your own, because we prepared a trusted build for t
 
     docker build --rm=true --tag=jboss/wildfly .
 
-## Image internals [updated Dec 13, 2018]
+## Image internals [updated Sep 13, 2022]
 
-This image extends the [`jboss/base-jdk:11`](https://github.com/jboss-dockerfiles/base-jdk/tree/jdk11) image which adds the OpenJDK distribution on top of the [`jboss/base`](https://github.com/jboss-dockerfiles/base) image. Please refer to the README.md for selected images for more info.
+This image adds the OpenJDK 17 distribution on top of a copy of the [`jboss/base`](https://github.com/jboss-dockerfiles/base) image, which is based on almalinux:9 since it has better support for jdk17 installation. Please refer to the README.md for selected image for more info.
 
 The server is run as the `jboss` user which has the uid/gid set to `1000`.
 
