@@ -1,44 +1,19 @@
-# jboss/base
-FROM almalinux:9
+FROM openjdk:17-jdk-alpine
 
-# Install packages necessary to run EAP
-RUN yum update -y  \
-    && yum -y install augeas bsdtar unzip  \
-    #xmlstarlet saxon
-    && yum clean all
-
-# Create a user and group used to launch processes
-# The user ID 1000 is the default for the first "regular" user on Fedora/RHEL,
-# so there is a high chance that this ID will be equal to the current user
-# making it easier to use volumes (no permission issues)
-RUN groupadd -r jboss -g 1000 && useradd -u 1000 -r -g jboss -m -d /opt/jboss -s /sbin/nologin -c "JBoss user" jboss && \
-    chmod 755 /opt/jboss
-
-# Set the working directory to jboss' user home directory
 WORKDIR /opt/jboss
 
-# jboss/base-jdk17
+RUN addgroup -S jboss -g 1000 && adduser -u 1000 -S -h /opt/jboss -s /sbin/nologin jboss jboss  && \
+    chmod 755 /opt/jboss
 
-# User root user to install software
-USER root
-
-# Install necessary packages
-RUN yum -y install java-17-openjdk-devel && yum clean all
-
-# Switch back to jboss user
-USER jboss
-
-# Set the JAVA_HOME variable to make it clear where Java is located
-ENV JAVA_HOME /usr/lib/jvm/java
-
-
-# Wildfly
 # Set the WILDFLY_VERSION env variable
 ENV WILDFLY_VERSION 26.1.2.Final
 ENV WILDFLY_SHA1 3dda0f3795c00cedf8b14c83f8c341244e7cad44
 ENV JBOSS_HOME /opt/jboss/wildfly
 
 USER root
+
+## CURL dependencies
+RUN apk add --no-cache curl
 
 # Add the WildFly distribution to /opt, and make wildfly the owner of the extracted tar content
 # Make sure the distribution is available from a well-known place
@@ -50,6 +25,9 @@ RUN cd $HOME \
     && rm wildfly-$WILDFLY_VERSION.tar.gz \
     && chown -R jboss:0 ${JBOSS_HOME} \
     && chmod -R g+rw ${JBOSS_HOME}
+
+## CURL dependencies
+RUN apk del curl
 
 # Ensure signals are forwarded to the JVM process correctly for graceful shutdown
 ENV LAUNCH_JBOSS_IN_BACKGROUND true
