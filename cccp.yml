@@ -1,2 +1,2 @@
 # This is for the purpose of building the container pipeline
-job-id: wildfly-jdk17
+job-id: wildfly
