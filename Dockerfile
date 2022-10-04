@@ -1,8 +1,8 @@
-FROM openjdk:17-jdk-alpine
+FROM eclipse-temurin:17.0.4.1_1-jdk-centos7
 
 WORKDIR /opt/jboss
 
-RUN addgroup -S jboss -g 1000 && adduser -u 1000 -S -h /opt/jboss -s /sbin/nologin jboss jboss  && \
+RUN groupadd -r jboss -g 1000 && useradd -u 1000 -r -g jboss -m -d /opt/jboss -s /sbin/nologin -c "JBoss user" jboss && \
     chmod 755 /opt/jboss
 
 # Set the WILDFLY_VERSION env variable
@@ -11,9 +11,6 @@ ENV WILDFLY_SHA1 3dda0f3795c00cedf8b14c83f8c341244e7cad44
 ENV JBOSS_HOME /opt/jboss/wildfly
 
 USER root
-
-## CURL dependencies
-RUN apk add --no-cache curl
 
 # Add the WildFly distribution to /opt, and make wildfly the owner of the extracted tar content
 # Make sure the distribution is available from a well-known place
@@ -25,9 +22,6 @@ RUN cd $HOME \
     && rm wildfly-$WILDFLY_VERSION.tar.gz \
     && chown -R jboss:0 ${JBOSS_HOME} \
     && chmod -R g+rw ${JBOSS_HOME}
-
-## CURL dependencies
-RUN apk del curl
 
 # Ensure signals are forwarded to the JVM process correctly for graceful shutdown
 ENV LAUNCH_JBOSS_IN_BACKGROUND true
