@@ -75,6 +75,10 @@ Then you can build the image:
 
     docker build --tag=jboss/wildfly-admin .
 
+Or for jdk 17:
+
+    docker build --build-arg jdk=17 --tag=jboss/wildfly-admin .
+
 Run it:
 
     docker run -it jboss/wildfly-admin
@@ -89,7 +93,7 @@ You don't need to do this on your own, because we prepared a trusted build for t
 
 ## Image internals [updated Oct 4, 2022]
 
-This image extends [`eclipse-temurin:17.0.4.1_1-jdk-centos7`](https://hub.docker.com/layers/library/eclipse-temurin/17.0.4.1_1-jdk-centos7/images/sha256-6ebcc8b834a938c1fb6791e98b4e434753aad62b2a7a17151d1294a06d7291e4?context=explore) image, installs the wildfly server and sets up the jboss environment similar to [`jboss/base`](https://github.com/jboss-dockerfiles/base) image. Please refer to the README.md for selected images for more info.
+This image extends [`eclipse-temurin`](https://hub.docker.com/_/eclipse-temurin/tags) jdk (11 by default) centos7 image, installs the wildfly server and sets up the jboss environment similar to [`jboss/base`](https://github.com/jboss-dockerfiles/base) image. Please refer to the README.md for selected images for more info.
 
 The server is run as the `jboss` user which has the uid/gid set to `1000`.
 

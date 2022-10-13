@@ -1,4 +1,5 @@
-FROM eclipse-temurin:17.0.4.1_1-jdk-centos7
+ARG jdk=11
+FROM eclipse-temurin:${jdk}-centos7
 
 WORKDIR /opt/jboss
 
