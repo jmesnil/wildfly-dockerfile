@@ -10,6 +10,33 @@ Previous repository at [https://hub.docker.com/r/jboss/wildfly](https://hub.dock
 
 ---
 
+## WildFly Images
+
+WildFly publishes images to run the application server with different JDK versions.
+The tag of the image identifies the version of WildFly as well as the JDK version in the images.
+
+For each release of WildFly (e.g. `27.0.0.Final`), there are images for each supported JDK version:
+
+* `quay.io/wildfly/wildfly:27.0.0.Final-jdk11`
+* `quay.io/wildfly/wildfly:27.0.0.Final-jdk17`
+
+There are also tags available to pull the _latest release of WildFly on the various JDK_:
+
+* `quay.io/wildfly/wildfly:latest-jdk11`
+* `quay.io/wildfly/wildfly:latest-jdk17`
+
+Finally, there is the `latest` tag that pull the latest release of WildFly on the oldest baseline JDK supported by WildFly. 
+
+* `quay.io/wildfly/wildfly:latest`
+
+---
+**NOTE**
+
+_This floating tag will correspond to a different JDK version  whenever WildFly changes its JDK baseline._ 
+
+---
+
+
 ## Usage
 
 To boot in standalone mode
