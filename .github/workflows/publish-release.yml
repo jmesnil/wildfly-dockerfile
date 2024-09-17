@@ -10,9 +10,25 @@ on:
   push:
     tags-ignore:
       - "26*"
-
+env:
+  WILDFLY_VERSION: 33.0.1.Final
+  WILDFLY_SHA1: 943ec801bf65bb42de27ef78c85d325180dcab0d
+  
 jobs:
+  wildfly-dist:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download wildfly
+        run: |
+          curl -L -O https://github.com/wildfly/wildfly/releases/download/${{ env.WILDFLY_VERSION }}/wildfly-${{ env.WILDFLY_VERSION }}.tar.gz \
+            && sha1sum wildfly-${{ env.WILDFLY_VERSION }}.tar.gz | grep ${{ env.WILDFLY_SHA1 }}
+      - name: Upload WildFly distribution
+        uses: actions/upload-artifact@v4
+        with:
+          name: wildfly-dist
+          path: wildfly-${{ env.WILDFLY_VERSION }}.tar.gz
   image:
+    needs: wildfly-dist
     env:
       # Put the "latest" tag on this JDK version
       JDK_VERSION_FOR_LATEST: 21
@@ -33,6 +49,10 @@ jobs:
     steps:
       - name: Check out the repo
         uses: actions/checkout@v4.1.4
+      - name: Download WildFly distribution
+        uses: actions/download-artifact@v4
+        with:
+          name: wildfly-dist
       - name: Docker meta
         id: meta
         uses: docker/metadata-action@v5.5.1
