@@ -1,0 +1,25 @@
+FROM quay.io/wildfly/wildfly
+
+ENV GALLEON_HOME=/opt/jboss/galleon
+
+# Install Galleon in /opt/jboss/galleon
+USER root
+ENV GALLEON_VERSION=6.0.3.Final
+RUN microdnf install unzip -y \
+    && cd /opt/jboss/ \
+    && curl -L -O https://github.com/wildfly/galleon/releases/download/$GALLEON_VERSION/galleon-$GALLEON_VERSION.zip \
+    && unzip galleon-$GALLEON_VERSION.zip \
+    && mv galleon-$GALLEON_VERSION galleon \
+    && rm galleon-$GALLEON_VERSION.zip \
+    && mkdir /opt/jboss/.m2 \
+    && chown -R jboss:0 /opt/jboss/ \
+    && chmod -R g+rw /opt/jboss/
+
+# Use galleon to provision the Keycloak SAML Adapter
+USER jboss
+ENV KEYCLOAK_VERSION=26.0.0
+RUN ${GALLEON_HOME}/bin/galleon.sh install \
+        org.keycloak:keycloak-saml-adapter-galleon-pack:$KEYCLOAK_VERSION \
+        --layers=keycloak-client-saml \
+        --dir=$JBOSS_HOME \
+    && rm -rf $HOME/.m2/repository
